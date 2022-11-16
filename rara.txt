@@ -1,0 +1,529 @@
+def recur_fibo(n):
+   if n <= 1:
+       return n
+   else:
+       return(recur_fibo(n-1) + recur_fibo(n-2))
+
+nterms = int(input("Enter the number of terms "))
+
+# check if the number of terms is valid
+if nterms <= 0:
+   print("Plese enter a positive integer")
+else:
+   print("Fibonacci sequence:")
+   for i in range(nterms):
+       print(recur_fibo(i))
+
+
+a=int(input("Enter the first number of the series "))
+b=int(input("Enter the second number of the series "))
+n=int(input("Enter the number of terms needed "))
+print(a,b,end=" ")
+while(n-2):
+    c=a+b
+    a=b
+    b=c
+    print(c,end=" ")
+    n=n-1
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\2huff
+import heapq
+
+class node:
+	def __init__(self, freq, symbol, left=None, right=None):
+		# frequency of symbol
+		self.freq = freq
+
+		# symbol name (character)
+
+		self.symbol = symbol
+
+		# node left of current node
+		self.left = left
+
+		# node right of current node
+		self.right = right
+
+		# tree direction (0/1)
+		self.huff = ''
+		
+	def __lt__(self, nxt):
+		return self.freq < nxt.freq
+		
+
+# utility function to print huffman
+# codes for all symbols in the newly
+# created Huffman tree
+def printNodes(node, val=''):
+	
+	# huffman code for current node
+	newVal = val + str(node.huff)
+
+	# if node is not an edge node
+	# then traverse inside it
+	if(node.left):
+		printNodes(node.left, newVal)
+	if(node.right):
+		printNodes(node.right, newVal)
+
+		# if node is edge node then
+		# display its huffman code
+	if(not node.left and not node.right):
+		print(f"{node.symbol} -> {newVal}")
+
+
+# characters for huffman tree
+chars = ['a', 'b', 'c', 'd', 'e', 'f']
+
+# frequency of characters
+freq = [ 5, 9, 12, 13, 16, 45]
+
+# list containing unused nodes
+nodes = []
+
+# converting characters and frequencies
+# into huffman tree nodes
+for x in range(len(chars)):
+	heapq.heappush(nodes, node(freq[x], chars[x]))
+
+while len(nodes) > 1:
+	
+	# sort all the nodes in ascending order
+	# based on their frequency
+	left = heapq.heappop(nodes)
+	right = heapq.heappop(nodes)
+
+	# assign directional value to these nodes
+	left.huff = 0
+	right.huff = 1
+
+	# combine the 2 smallest nodes to create
+	# new node as their parent
+	newNode = node(left.freq+right.freq, left.symbol+right.symbol, left, right)
+
+	heapq.heappush(nodes, newNode)
+
+# Huffman Tree is ready!
+printNodes(nodes[0])
+
+
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\3fractknap
+
+
+def fractional_knapsack(value, weight, capacity):
+     # index = [0, 1, 2, ..., n - 1] for n items
+    index = list(range(len(value)))
+    # contains ratios of values to weight
+    ratio = [v/w for v, w in zip(value, weight)]
+    # index is sorted according to value-to-weight ratio in decreasing order
+    index.sort(key=lambda i: ratio[i], reverse=True)
+    max_value = 0
+    fractions = [0]*len(value)
+    for i in index:
+        if weight[i] <= capacity:
+            fractions[i] = 1
+            max_value += value[i]
+            capacity -= weight[i]
+        else:
+            fractions[i] = capacity/weight[i]
+            max_value += value[i]*capacity/weight[i]
+            break
+    return max_value, fractions
+
+if __name__ == '__main__':
+    n = int(input('Enter number of items: '))
+    value = input('Enter the values of the {} item(s) in order: '.format(n)).split()
+    value = [int(v) for v in value]
+    weight = input('Enter the positive weights of the {} item(s) in order: '.format(n)).split()
+    weight = [int(w) for w in weight]
+    capacity = int(input('Enter maximum weight: '))
+ 
+    max_value, fractions = fractional_knapsack(value, weight, capacity)
+    print('The maximum value of items that can be carried:', max_value)
+    print('The fractions in which the items should be taken:', fractions)
+
+# Enter number of items: 3 
+# Enter the values of the 3 item(s) in order: 24 15 25 
+# Enter the positive weights of the 3 item(s) in order: 15 10 18 Enter maximum weight: 20 
+# The maximum value of items that can be carried: 31.5 
+# The fractions in which the items should be taken: [1, 0.5, 0] 
+
+
+
+////////////////////////////////////////01knap
+
+# A naive recursive implementation
+# of 0-1 Knapsack Problem
+
+# Returns the maximum value that
+# can be put in a knapsack of
+# capacity W
+
+
+def knapSack(W, wt, val, n):
+
+	# Base Case
+	if n == 0 or W == 0:
+		return 0
+
+	# If weight of the nth item is
+	# more than Knapsack of capacity W,
+	# then this item cannot be included
+	# in the optimal solution
+	if (wt[n-1] > W):
+		return knapSack(W, wt, val, n-1)
+
+	# return the maximum of two cases:
+	# (1) nth item included
+	# (2) not included
+	else:
+		return max(
+			val[n-1] + knapSack(
+				W-wt[n-1], wt, val, n-1),
+			knapSack(W, wt, val, n-1))
+
+# end of function knapSack
+
+
+#Driver Code
+if '__main__' == __name__:
+    val = input('Enter the values of the item(s) in order: ').split()
+    val = [int(v) for v in val] # 60 100 120
+    wt = input('Enter the positive weights of the item(s) in order: ').split()
+    wt = [int(w) for w in wt] # 10 20 30
+    W = int(input('Enter the maximum capacity of the knapsack: ')) # 50
+    n = len(val)
+    print(knapSack(W, wt, val, n))
+
+
+///////////////////////////////////////////////////////////nq
+
++# Python3 program to solve N Queen
+# Problem using backtracking
+global N
+N = 4
+
+def printSolution(board):
+	for i in range(N):
+		for j in range(N):
+			print(board[i][j], end = " ")
+		print()
+
+# A utility function to check if a queen can
+# be placed on board[row][col]. Note that this
+# function is called when "col" queens are
+# already placed in columns from 0 to col -1.
+# So we need to check only left side for
+# attacking queens
+def isSafe(board, row, col):
+
+	# Check this row on left side
+	for i in range(col):
+		if board[row][i] == 1:
+			return False
+
+	# Check upper diagonal on left side
+	for i, j in zip(range(row, -1, -1),
+					range(col, -1, -1)):
+		if board[i][j] == 1:
+			return False
+
+	# Check lower diagonal on left side
+	for i, j in zip(range(row, N, 1),
+					range(col, -1, -1)):
+		if board[i][j] == 1:
+			return False
+
+	return True
+
+def solveNQUtil(board, col):
+	
+	# base case: If all queens are placed
+	# then return true
+	if col >= N:
+		return True
+
+	# Consider this column and try placing
+	# this queen in all rows one by one
+	for i in range(N):
+
+		if isSafe(board, i, col):
+			
+			# Place this queen in board[i][col]
+			board[i][col] = 1
+
+			# recur to place rest of the queens
+			if solveNQUtil(board, col + 1) == True:
+				return True
+
+			# If placing queen in board[i][col
+			# doesn't lead to a solution, then
+			# queen from board[i][col]
+			board[i][col] = 0
+
+	# if the queen can not be placed in any row in
+	# this column col then return false
+	return False
+
+# This function solves the N Queen problem using
+# Backtracking. It mainly uses solveNQUtil() to
+# solve the problem. It returns false if queens
+# cannot be placed, otherwise return true and
+# placement of queens in the form of 1s.
+# note that there may be more than one
+# solutions, this function prints one of the
+# feasible solutions.
+def solveNQ():
+	board = [ [0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0] ]
+
+	if solveNQUtil(board, 0) == False:
+		print ("Solution does not exist")
+		return False
+
+	printSolution(board)
+	return True
+
+# Driver Code
+if '__main__' == __name__:
+    solveNQ()
+
+
+/////////////////////////////////////////////ml1uber
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+!pip install haversine
+
+df = pd.read_csv("/content/uber.csv")
+df.head()
+
+df.info()
+
+df.columns
+
+df.drop(['Unnamed: 0','key'],axis = 1,inplace = True)
+df.head()
+
+df.shape
+
+df.pickup_datetime = pd.to_datetime(df.pickup_datetime, errors='coerce') 
+
+Df.dtypes
+
+df = df.assign(hour = df.pickup_datetime.dt.hour,
+          day= df.pickup_datetime.dt.day,
+          month = df.pickup_datetime.dt.month,
+          year = df.pickup_datetime.dt.year,
+          dayofweek = df.pickup_datetime.dt.dayofweek)
+df.drop('pickup_datetime',axis = 1,inplace = True)
+df.head()
+
+df.isnull().sum()
+
+df['dropoff_latitude'].fillna(value=df['dropoff_latitude'].mean(),inplace = True)
+df['dropoff_longitude'].fillna(value=df['dropoff_longitude'].median(),inplace = True)
+df.isnull().sum()
+
+df.plot(kind = "box",subplots = True,layout = (7,2),figsize=(15,20))
+
+////////////////////////////////////////////////////////////////////////////////////ml2email
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+import warnings
+warnings.filterwarnings('ignore')
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+df=pd.read_csv('/content/emails.csv')
+df.head()
+
+df.columns
+
+df.isnull().sum()
+
+df.dropna(inplace = True)
+
+df.drop(['Email No.'],axis=1,inplace=True)
+X = df.drop(['Prediction'],axis = 1)
+y = df['Prediction']
+
+from sklearn.preprocessing import scale
+X = scale(X)
+# split into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42)
+
+KNN classifier
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=7)
+ 
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+print("Prediction",y_pred)
+
+print("KNN accuracy = ",metrics.accuracy_score(y_test,y_pred))
+
+print("Confusion matrix",metrics.confusion_matrix(y_test,y_pred))
+
+SVM classifier
+# cost C = 1
+model = SVC(C = 1)
+
+# fit
+model.fit(X_train, y_train)
+
+# predict
+y_pred = model.predict(X_test)
+
+metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+
+print("SVM accuracy = ",metrics.accuracy_score(y_test,y_pred))
+
+//////////////////////////////////////////////////////////////////////////////3mlbank
+
+#Importing the libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt 
+df = pd.read_csv("/content/Churn_Modelling.csv")
+
+
+
+
+Preprocessing.
+df.head()
+
+df.shape
+
+df.describe()
+
+df.isnull()
+
+df.isnull().sum()
+
+df.info()
+
+df.dtypes
+
+df.columns
+
+#Dropping the unnecessary columns 
+df = df.drop(['RowNumber', 'Surname', 'CustomerId'], axis= 1) 
+df.head()
+
+Visualization
+def visualization(x, y, xlabel):
+    plt.figure(figsize=(10,5))
+    plt.hist([x, y], color=['red', 'green'], label = ['exit', 'not_exit'])
+    plt.xlabel(xlabel,fontsize=20)
+    plt.ylabel("No. of customers", fontsize=20)
+    plt.legend()
+
+df_churn_exited = df[df['Exited']==1]['Tenure']
+df_churn_not_exited = df[df['Exited']==0]['Tenure']
+visualization(df_churn_exited, df_churn_not_exited, "Tenure")
+
+df_churn_exited2 = df[df['Exited']==1]['Age']
+df_churn_not_exited2 = df[df['Exited']==0]['Age']
+visualization(df_churn_exited2, df_churn_not_exited2, "Age")
+
+Converting the Categorical Variables
+X = df[['CreditScore','Gender','Age','Tenure','Balance','NumOfProducts','HasCrCard','IsActiveMember','EstimatedSalary']]
+states = pd.get_dummies(df['Geography'],drop_first = True)
+gender = pd.get_dummies(df['Gender'],drop_first = True)
+df = pd.concat([df,gender,states], axis = 1)
+
+
+
+//////////////////////////////////////////////////////////////////////////ml4minima
+
+cur_x = 2 # The algorithm starts at x=3
+rate = 0.01 # Learning rate
+precision = 0.000001 #This tells us when to stop the algorithm
+previous_step_size = 1 #
+max_iters = 10000 # maximum number of iterations
+iters = 0 #iteration counter
+df = lambda x: 2*(x+3) #Gradient of our function
+
+while previous_step_size > precision and iters < max_iters:
+  prev_x = cur_x #Store current x value in prev_x
+  cur_x = cur_x - rate * df(prev_x) #Grad descent
+  previous_step_size = abs(cur_x - prev_x) #Change in x
+  iters = iters+1 #iteration count
+  print("Iteration ",iters,"\n X value is ",cur_x) #Print iterations
+
+print("The local minimum occurs at", cur_x)
+
+
+/////////////////////////////////////////////////////////////////////////////ml5knn
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+import warnings
+warnings.filterwarnings('ignore')
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+df=pd.read_csv('/content/diabetes.csv')
+df.columns
+
+Check for null values. If present remove null values from the dataset
+df.isnull().sum()
+
+Outcome is the label/target, other columns are features
+X = df.drop('Outcome',axis = 1)
+y = df['Outcome']
+from sklearn.preprocessing import scale
+X = scale(X)
+# split into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42)
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=7)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+print("Confusion matrix: ")
+cs = metrics.confusion_matrix(y_test,y_pred)
+print(cs)
+
+print("Acccuracy ",metrics.accuracy_score(y_test,y_pred))
+
+total_misclassified = cs[0,1] + cs[1,0]
+print(total_misclassified)
+total_examples = cs[0,0]+cs[0,1]+cs[1,0]+cs[1,1]
+print(total_examples)
+print("Error rate",total_misclassified/total_examples)
+print("Error rate ",1-metrics.accuracy_score(y_test,y_pred))
+
+print("Precision score",metrics.precision_score(y_test,y_pred))
+
+print("Recall score ",metrics.recall_score(y_test,y_pred))
+
+print("Classification report ",metrics.classification_report(y_test,y_pred))
+
+
+
+
+
+
+
+
+
+
+
+
